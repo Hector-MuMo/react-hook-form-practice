@@ -7,6 +7,9 @@
 
 import { useForm, type FieldErrors } from "react-hook-form";
 import getRenderCount from "./utils/getRenderCount";
+import TextField from "./controls/TextField";
+import Select from "./controls/Select";
+import type { SelectOptions } from "./types";
 //import { useRenderCount } from "./hooks/useRenderCount"
 
 type FoodDeliveryFormType = {
@@ -14,21 +17,27 @@ type FoodDeliveryFormType = {
   email: string;
   customerName: string;
   mobile: string;
+  paymentMethod: string;
+  deliveryIn: number;
 };
+
+const paymentOptions: SelectOptions[] = [
+  { value: "", text: "Select" },
+  { value: "online", text: "Paid Online" },
+  { value: "COD", text: "Cash on Delivery" },
+];
+
+const deliveryOptions: SelectOptions[] = [
+  { value: 0, text: "Select" },
+  { value: 30, text: "Half an Hour" },
+  { value: 60, text: "1 Hour" },
+  { value: 120, text: "2 Hour" },
+  { value: 180, text: "3 Hour" },
+];
 
 const RenderCount = getRenderCount();
 
 export const FoodDeliveryForm = () => {
-  // useForm hook to manage form state and validation,
-  // formState contains many options, one of them is info about errors
-  // one paramenter is defaultValues to set initial values for the form fields
-  // paramenter mode can be used to set when validation should occur (onSubmit, onBlur, onChange, onTouched, all)
-  // paramenter criteriaMode can be used to set how validation errors are reported, all errors o just first one (firstError, all)
-  // paramener reValidateMode can be used to set when inputs with errors are re-validated
-  //    in other words it will check again if the validations are completed (onChange, onBlur, onSubmit)
-  // parameter shouldFocusError can be used to set if the first field with error should be focused automatically (true, false)
-  // parameter delayError can be used to set a delay (in ms) before validation is triggered
-  // another form of destructuring is t get
   const {
     register,
     handleSubmit,
@@ -43,6 +52,8 @@ export const FoodDeliveryForm = () => {
       email: "",
       customerName: "",
       mobile: "",
+      paymentMethod: "",
+      deliveryIn: 0,
     },
   });
 
@@ -59,97 +70,72 @@ export const FoodDeliveryForm = () => {
       <RenderCount />
       <div className="row mb-2">
         <div className="col">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="# Order No"
-              disabled
-              {...register("orderNo")}
-            />
-            <label># Order No</label>
-          </div>
+          <TextField label="# Order No" disabled {...register("orderNo")} />
         </div>
         <div className="col">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Mobile"
-              {...register("mobile", {
-                minLength: {
-                  value: 10,
-                  message: "Mobile number must be 10 digits",
-                },
-                maxLength: 10,
-                required: {
-                  value: true,
-                  message: "Mobile number is required",
-                },
-              })}
-            />
-            <label>Mobile</label>
-            {errors.mobile && (
-              <div className="error-feedback">{errors.mobile?.message}</div>
-            )}
-            <div>{errors.mobile?.message}</div>
-          </div>
+          <TextField
+            label="Mobile"
+            {...register("mobile", {
+              required: {
+                value: true,
+                message: "Mobile number is required",
+              },
+            })}
+            error={errors.mobile}
+          />
         </div>
       </div>
-      <div className="row">
+      <div className="row mb-2">
         <div className="col">
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Customer Name"
-              {...register("customerName", {
-                required: { value: true, message: "Customer name is required" },
-              })}
-            />
-            <label>Customer Name</label>
-            {errors.customerName && (
-              <div className="error-feedback">
-                {errors.customerName?.message}
-              </div>
-            )}
-          </div>
+          <TextField
+            label="Customer Name"
+            {...register("customerName", {
+              required: { value: true, message: "Customer name is required" },
+            })}
+            error={errors.customerName}
+          />
         </div>
         <div className="col">
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Email"
-              {...register("email", {
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-                validate: {
-                  notFake: (value) => {
-                    return (
-                      value != "email@gmail.com" || "This email is not allowed"
-                    );
-                  },
-                  notFromBlackListedDomain: (value) => {
-                    return (
-                      (!value.endsWith("@xyz.com") &&
-                        !value.endsWith("@example.com")) ||
-                      "This email is not allowed"
-                    );
-                  },
-                },
-              })}
-            />
-            <label>Email</label>
-            {errors.email && (
-              <div className="error-feedback">{errors.email?.message}</div>
-            )}
-          </div>
+          <TextField
+            label="Email"
+            {...register("email", {
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
+            error={errors.email}
+          />
         </div>
       </div>
-
+      <div className="row mb-2">
+        <div className="col">
+          <Select
+            label="Payment Method"
+            options={paymentOptions}
+            error={errors.paymentMethod}
+            {...register("paymentMethod", {
+              required: {
+                value: true,
+                message: "Payment method is required",
+              },
+            })}
+          />
+        </div>
+        <div className="col">
+          <Select
+            label="Delivery Whithin"
+            options={deliveryOptions}
+            error={errors.paymentMethod}
+            {...register("deliveryIn", {
+              required: {
+                value: true,
+                message: "Payment method is required",
+              },
+            })}
+          />
+        </div>
+      </div>
       <button type="submit" className="btn btn-primary">
         Submit
       </button>

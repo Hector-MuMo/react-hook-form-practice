@@ -1,0 +1,1 @@
+export type SelectOptions = string | { value: string; text: string } | { value: number; text: string };
