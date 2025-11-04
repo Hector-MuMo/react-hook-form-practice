@@ -19,6 +19,12 @@ type FoodDeliveryFormType = {
   mobile: string;
   paymentMethod: string;
   deliveryIn: number;
+  address: {
+    streetAddress: string;
+    landmark: string;
+    city: string;
+    state: string;
+  }
 };
 
 const paymentOptions: SelectOptions[] = [
@@ -54,6 +60,12 @@ export const FoodDeliveryForm = () => {
       mobile: "",
       paymentMethod: "",
       deliveryIn: 0,
+      address: {
+        streetAddress: "",
+        landmark: "",
+        city: "",
+        state: "",
+      }
     },
   });
 
@@ -108,6 +120,10 @@ export const FoodDeliveryForm = () => {
           />
         </div>
       </div>
+      <p>List of ordered food items</p>
+      <div className="text-start fw-bold mt-4 mb-2">
+        Checkout Details
+      </div>
       <div className="row mb-2">
         <div className="col">
           <Select
@@ -133,6 +149,43 @@ export const FoodDeliveryForm = () => {
                 message: "Payment method is required",
               },
             })}
+          />
+        </div>
+      </div>
+      <div className="text-start fw-bold mt-4 mb-2">
+        Delivery Address
+      </div>
+      <div className="row mb-3">
+        <div className="col">
+          <TextField
+            label="Street Address"
+            error={errors.address?.streetAddress}
+            {...register("address.streetAddress", {
+              required: { value: true, message: "Address is required" },
+            })}
+          />
+        </div>
+        <div className="col">
+          <TextField
+            label="City"
+            error={errors.address?.city}
+            {...register("address.city", {
+              required: { value: true, message: "City is required" },
+            })}
+          />
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col">
+          <TextField
+            label="Landmark"
+            {...register("address.landmark")}
+          />
+        </div>
+        <div className="col">
+          <TextField
+            label="State"
+            {...register("address.state")}
           />
         </div>
       </div>
