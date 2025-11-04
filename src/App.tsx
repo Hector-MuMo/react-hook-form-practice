@@ -1,6 +1,7 @@
 
 import './App.css'
 import { FoodDeliveryForm } from './FoodDeliveryForm'
+import { TypicalForm } from './TypicalForm'
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
   return (
     <>
       <FoodDeliveryForm />
+      {/* <TypicalForm /> */}
     </>
   )
 }

@@ -1,5 +1,6 @@
 import type { ChangeEvent, SyntheticEvent} from "react"
 import { useState } from "react"
+import getRenderCount from "./utils/getRenderCount"
 //import { useRenderCount } from "./hooks/useRenderCount"
 
 type FoodDeliveryFormType = {
@@ -12,7 +13,7 @@ type FoodDeliveryFormErrorType = {
   mobile: string
 }
 
-//const RenderCount = useRenderCount()
+const RenderCount = getRenderCount()
 
 export const TypicalForm = () => {
   const [values, setValues] = useState<FoodDeliveryFormType>({
@@ -50,7 +51,7 @@ export const TypicalForm = () => {
 
   return (
     <form autoComplete="off" onSubmit={onSubmit}>
-      {/* <RenderCount /> */}
+      <RenderCount />
       <div className="form-floating mb-3">
         <input
           type="text"
