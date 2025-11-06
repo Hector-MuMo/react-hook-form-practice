@@ -2,7 +2,7 @@ import { forwardRef, type ForwardedRef } from "react";
 import type { FieldError } from "react-hook-form";
 
 type TextFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
+  label?: string;
   error?: FieldError | undefined;
 };
 
@@ -12,7 +12,7 @@ const TextField = forwardRef(
     ref: ForwardedRef<HTMLInputElement>
   ) => {
     return (
-      <div className="form-floating">
+      <div className={label ? "form-floating" : ""}>
         <input
           type={type}
           className={`form-control ${className}`}
@@ -20,7 +20,7 @@ const TextField = forwardRef(
           ref={ref}
           {...rest}
         />
-        <label>{label}</label>
+        {label && <label>{label}</label>}
         {error && <div className="error-feedback">{error.message}</div>}
       </div>
     );

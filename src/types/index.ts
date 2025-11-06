@@ -17,8 +17,11 @@ export interface FoodDeliveryMasterType {
   mobile: string;
 }
 
+export type OrderedFoodItemType = {name: string; quantity: number}
+
 export type FoodDeliveryFormType = {
   address: DeliveryAddressFormType;
+  foodItems: OrderedFoodItemType[];
 } & FoodDeliveryMasterType &
   CheckoutFormType;
 
