@@ -1,6 +1,9 @@
 import type { CheckoutFormType, SelectOptions } from "../../../types";
 import Select from "../../../controls/Select";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
+import getRenderCount from "../../../utils/getRenderCount";
+
+const RenderCount = getRenderCount();
 
 const paymentOptions: SelectOptions[] = [
   { value: "", text: "Select" },
@@ -17,10 +20,20 @@ const deliveryOptions: SelectOptions[] = [
 ];
 
 const CheckoutForm = () => {
-  const { register, formState: { errors } } = useFormContext<CheckoutFormType>();
+  const { register } = useFormContext<CheckoutFormType>();
+  // Destructure only the errors from useFormState to minimize re-renders
+  // useStateForm is used here to subscribe to specific form state changes and avoid unnecessary re-renders
+  // parameter 'name' allows to subscribe only to specific fields
+  // parameter 'exact' when set to true, ensures that only the specified fields trigger re-renders, ignoring changes in nested fields.
+  //    This is useful for optimizing performance in forms with nested structures.
+  // parameter 'disabled' when set to true, prevents the component from re-rendering in response to form state changes.
+  const { errors } = useFormState<CheckoutFormType>({
+    name: ["paymentMethod", "deliveryIn"],
+  })
 
   return (
     <>
+      <RenderCount />
       <div className="text-start fw-bold mt-4 mb-2">Checkout Details</div>
       <div className="row mb-2">
         <div className="col">

@@ -37,8 +37,8 @@ export const FoodDeliveryForm = () => {
       },
     });
 
-  const { handleSubmit, formState } = methods;
-  //IMPORTANT: When we destructure formState, we create a subscription to the properties we destructure 
+  const { handleSubmit, /*formState*/ } = methods;
+  //IMPORTANT: When we destructure formState, we create a subscription to the properties we destructure
   // and any change in any property will cause a re-render.
   // For example isDirty wil re-render the component on every change of the boolean state.
   /*
@@ -55,7 +55,28 @@ export const FoodDeliveryForm = () => {
   submitCount: a number indicating how many times the form has been submitted.
   isLoading: a boolean indicating whether the form is in a loading state, typically used for async operations.
   */
-  const { isDirty } = formState;
+  // const {
+  //   isDirty,
+  //   dirtyFields,
+  //   touchedFields,
+  //   isValid,
+  //   isValidating,
+  //   isSubmitSuccessful,
+  //   isSubmitted,
+  //   isSubmitting,
+  //   submitCount,
+  // } = formState;
+  
+  // console.log("isDirty ", isDirty);
+  // console.log("dirty fields ", dirtyFields);
+  // console.log("touched fields ", touchedFields);
+  // console.log("valid form ", isValid);
+  // console.log("validating form ", isValidating);
+  // console.log("submit successful ", isSubmitSuccessful);
+  // console.log("form submitted ", isSubmitted);
+  // console.log("form is submitting ", isSubmitting);
+  // console.log("form is submitted this number of times ", submitCount);
+  
 
   const onSubmit = (formData: FoodDeliveryFormType) => {
     console.log("form data", formData);
