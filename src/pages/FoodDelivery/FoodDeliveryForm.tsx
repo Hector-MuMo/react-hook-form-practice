@@ -39,7 +39,7 @@ export const FoodDeliveryForm = () => {
       },
     });
 
-  const { handleSubmit, control, /*watch*/ } = methods;
+  const { handleSubmit, control, /*watch,*/ getValues, setValue } = methods;
 
   // watch works to re-render the form on field changes
   // we can add these parameters
@@ -72,10 +72,19 @@ export const FoodDeliveryForm = () => {
   }; 
 
   const onError = (errors: FieldErrors) => {
-    console.log("validation errors", errors);
+    //console.log("validation errors", errors);
     //console.log(getFieldState("customerName"));
+    //the parameter we can pass getValues are
+    // getValues(); returns all form values
+    // getValues("customerName"); returns specific form field value
+    // getValues(["customerName","email"]); returns array of specific form field values
+    console.log("current form values", getValues());
     
   };
+
+  const onDemo = () => {
+    setValue("customerName", "John Doe");
+  }
 
   return (
     <form autoComplete="off" onSubmit={handleSubmit(onSubmit, onError)}>
@@ -89,6 +98,9 @@ export const FoodDeliveryForm = () => {
       </FormProvider>
 
       <SubmitButton value="Submit" control={control} />
+      <button className="btn btn-secondary ms-2" onClick={onDemo} type="button">
+        Demo
+      </button>
     </form>
   );
 };
