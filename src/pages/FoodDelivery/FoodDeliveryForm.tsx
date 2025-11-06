@@ -9,6 +9,7 @@ import CheckoutForm from "./Components/CheckoutForm";
 import type { FoodDeliveryFormType } from "../../types";
 import DeliveryAddressForm from "./Components/DeliveryAddressForm";
 import FoodDeliveryMaster from "./Components/FoodDeliveryMaster";
+import SubmitButton from "../../controls/SubmitButton";
 
 //import { useRenderCount } from "./hooks/useRenderCount"
 
@@ -37,7 +38,7 @@ export const FoodDeliveryForm = () => {
       },
     });
 
-  const { handleSubmit, /*formState*/ } = methods;
+  const { handleSubmit, /*formState,*/ control } = methods;
   //IMPORTANT: When we destructure formState, we create a subscription to the properties we destructure
   // and any change in any property will cause a re-render.
   // For example isDirty wil re-render the component on every change of the boolean state.
@@ -66,7 +67,7 @@ export const FoodDeliveryForm = () => {
   //   isSubmitting,
   //   submitCount,
   // } = formState;
-  
+
   // console.log("isDirty ", isDirty);
   // console.log("dirty fields ", dirtyFields);
   // console.log("touched fields ", touchedFields);
@@ -97,9 +98,7 @@ export const FoodDeliveryForm = () => {
         <DeliveryAddressForm />
       </FormProvider>
 
-      <button type="submit" className="btn btn-primary">
-        Submit
-      </button>
+      <SubmitButton value="Submit" control={control} />
     </form>
   );
 };
