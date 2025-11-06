@@ -10,6 +10,7 @@ import type { FoodDeliveryFormType } from "../../types";
 import DeliveryAddressForm from "./Components/DeliveryAddressForm";
 import FoodDeliveryMaster from "./Components/FoodDeliveryMaster";
 import SubmitButton from "../../controls/SubmitButton";
+//import { useEffect } from "react";
 
 //import { useRenderCount } from "./hooks/useRenderCount"
 
@@ -38,50 +39,37 @@ export const FoodDeliveryForm = () => {
       },
     });
 
-  const { handleSubmit, /*formState,*/ control } = methods;
-  //IMPORTANT: When we destructure formState, we create a subscription to the properties we destructure
-  // and any change in any property will cause a re-render.
-  // For example isDirty wil re-render the component on every change of the boolean state.
-  /*
-  isDirty: a boolean indicating whether any of the form fields have been modified from their initial values.
-  isValid: a boolean indicating whether the entire form is valid based on the defined validation rules.
-  isValidating: a boolean indicating whether the form is currently undergoing validation.
-  errors: an object containing validation errors for each form field, if any exist.
-  dirtyFields: an object indicating which specific fields have been modified.
-  touchedFields: an object indicating which specific fields have been interacted with (focused and then blurred).
-  defaultValues: an object containing the initial values of the form fields.
-  isSubmitting: a boolean indicating whether the form is currently being submitted.
-  isSubmitted: a boolean indicating whether the form has been submitted at least once.
-  isSubmitSuccessful: a boolean indicating whether the last form submission was successful.
-  submitCount: a number indicating how many times the form has been submitted.
-  isLoading: a boolean indicating whether the form is in a loading state, typically used for async operations.
-  */
-  // const {
-  //   isDirty,
-  //   dirtyFields,
-  //   touchedFields,
-  //   isValid,
-  //   isValidating,
-  //   isSubmitSuccessful,
-  //   isSubmitted,
-  //   isSubmitting,
-  //   submitCount,
-  // } = formState;
+  const { handleSubmit, control, /*watch*/ } = methods;
 
-  // console.log("isDirty ", isDirty);
-  // console.log("dirty fields ", dirtyFields);
-  // console.log("touched fields ", touchedFields);
-  // console.log("valid form ", isValid);
-  // console.log("validating form ", isValidating);
-  // console.log("submit successful ", isSubmitSuccessful);
-  // console.log("form submitted ", isSubmitted);
-  // console.log("form is submitting ", isSubmitting);
-  // console.log("form is submitted this number of times ", submitCount);
+  // watch works to re-render the form on field changes
+  // we can add these parameters
+  // watch(); affects all the form fields
+  // watch("customerName"); affects only customerName field
+  // watch(["customerName","email"]); affects customerName and email fields
+  // watch((data, {name, type}) => console.log(data, name, type)); to get all the changes in the form and not re-render the form
+  // watch("customerName", "jaun"); to set default value while watching a field, this default value is only for the watch and not for the form field
+  //watch((data, {name, type}) => console.log(data, name, type));
+
+  //const paymentMethod = watch("paymentMethod");
+
+  // Base on paymentmethod input watch, we can trigger side effects
+  // useEffect(() => {
+  //   if (paymentMethod === "online") {
+  //     alert("Redirecting to online payment gateway...");
+  //   }
+  // }, [paymentMethod])
+
+  // useEffect(() => {
+  //   // In this case, watch is used to subscribe to form changes without re-rendering the form
+  //   // and we can perform side effects based on form changes, later unsubscribe the watch on component unmount
+  //   const suscription = watch((data, {name, type}) => console.log(data, name, type));
+  //   return () => suscription.unsubscribe();
+  // }, [watch]);
   
 
   const onSubmit = (formData: FoodDeliveryFormType) => {
     console.log("form data", formData);
-  };
+  }; 
 
   const onError = (errors: FieldErrors) => {
     console.log("validation errors", errors);

@@ -1,6 +1,5 @@
 import React from "react"
 import {  useFormState, type Control } from "react-hook-form"
-import getRenderCount from "../utils/getRenderCount"
 
 
 type SubmitButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -8,7 +7,6 @@ type SubmitButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   control?: Control<any, any>
 }
 
-const RenderCount = getRenderCount()
 
 export default function SubmitButton(props: SubmitButtonProps) {
   const {
@@ -31,7 +29,6 @@ function WithControl({
   const { isSubmitting } = useFormState({ control })
   return (
     <>
-      <RenderCount />
       <button
         type="submit"
         className={`btn ${className}`}
@@ -63,7 +60,6 @@ function WithoutControl({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <>
-      <RenderCount />
       <button type="submit" className={`btn ${className}`} {...other}>
         {value}
       </button>

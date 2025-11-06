@@ -1,7 +1,8 @@
 import type { CheckoutFormType, SelectOptions } from "../../../types";
 import Select from "../../../controls/Select";
-import { useFormContext, useFormState } from "react-hook-form";
+import { useFormContext, useFormState, useWatch } from "react-hook-form";
 import getRenderCount from "../../../utils/getRenderCount";
+import { useEffect } from "react";
 
 const RenderCount = getRenderCount();
 
@@ -30,6 +31,22 @@ const CheckoutForm = () => {
   const { errors } = useFormState<CheckoutFormType>({
     name: ["paymentMethod", "deliveryIn"],
   })
+
+  // Using useWatch to monitor paymentMethod field without causing re-renders
+  // paramenter 'name' specifies the field to watch, it can also be an array of field names
+  // parameter 'defaultValue' sets a default value for the watched field(s) if they are undefined
+  // parameter 'control' it will be necessary to provide control when useWatch is used outside of FormProvider or useFormContext
+  // parameter 'disabled' when set to true, prevents the component from re-rendering in response to changes in the watched field(s).
+  // parameter 'exact' when set to true, ensures that only the specified fields trigger re-renders, ignoring changes in nested fields.
+  const paymentMethod = useWatch({name: "paymentMethod"});
+
+  useEffect(() => {
+    if (paymentMethod === "online") {
+      alert("Redirecting to online payment gateway...");
+    }
+  }, [paymentMethod]);
+
+
 
   return (
     <>
