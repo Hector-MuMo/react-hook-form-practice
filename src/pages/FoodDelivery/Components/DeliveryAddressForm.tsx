@@ -6,7 +6,11 @@ import getRenderCount from "../../../utils/getRenderCount";
 const RenderCount = getRenderCount();
 
 const DeliveryAddressForm = () => {
-  const { register, formState: { errors } } = useFormContext<{address: DeliveryAddressFormType}>();
+  // getFieldState can be used to get the state of a specific field without causing a re-render of the entire form.
+  // This is useful for performance optimization, especially in large forms.
+  // also it works better for nested fields.
+  // This has a better performance if you use it inside the child components to get the state of specific fields.
+  const { register, formState: { errors }, getFieldState } = useFormContext<{address: DeliveryAddressFormType}>();
 
   return (
     <>
@@ -40,6 +44,7 @@ const DeliveryAddressForm = () => {
           <TextField label="State" {...register("address.state")} />
         </div>
       </div>
+      <div>{getFieldState("address") && "Having access just to address form with getFiledState"}</div>
     </>
   );
 };

@@ -85,6 +85,8 @@ export const FoodDeliveryForm = () => {
 
   const onError = (errors: FieldErrors) => {
     console.log("validation errors", errors);
+    //console.log(getFieldState("customerName"));
+    
   };
 
   return (
