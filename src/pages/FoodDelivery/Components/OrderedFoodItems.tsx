@@ -1,8 +1,17 @@
 import { useFieldArray, useFormContext, useFormState } from "react-hook-form";
-import type { OrderedFoodItemType } from "../../../types";
+import type {
+  FoodType,
+  OrderedFoodItemType,
+  SelectOptions,
+} from "../../../types";
 import TextField from "../../../controls/TextField";
+import { useEffect, useState } from "react";
+import { getFoodItems } from "../../../db";
+import Select from "../../../controls/Select";
 
 export default function OrderedFoodItems() {
+  const [footList, setFoodList] = useState<FoodType[]>();
+  const [foodOptions, setFoodOptions] = useState<SelectOptions[]>([]);
   const { register } = useFormContext<{ foodItems: OrderedFoodItemType[] }>();
 
   const { errors } = useFormState<{ foodItems: OrderedFoodItemType[] }>({
@@ -30,25 +39,34 @@ export default function OrderedFoodItems() {
   } = useFieldArray({ name: "foodItems" });
 
   const onRowAdd = () => {
-    append({ name: "Food", quantity: 1 });
+    append({ foodId: 0, price: 0, quantity: 0, totalPrice: 0 });
     //prepend({name: "Food", quantity: 1});
     //insert(2,{name: "Food", quantity: 1});
   };
 
   const onSwapAndMove = () => {
     //swap(0, 2);
-    move(0, 2);
+    //move(0, 2);
   };
-  
+
   const onUpdateAndReplace = () => {
     //update(0, {{name: "Food", quantity: 1}});
-    replace([{name: "Food 5", quantity: 5}, {name: "Food 10", quantity: 10}]);
+    //replace([{name: "Food 5", quantity: 5}, {name: "Food 10", quantity: 10}]);
   };
 
   const onRowDelete = (index: number) => {
-    remove(index)
-  }
+    remove(index);
+  };
 
+  useEffect(() => {
+    const tempList: FoodType[] = getFoodItems();
+    const tempOptions: SelectOptions[] = tempList.map((x) => ({
+      value: x.foodId,
+      text: x.name,
+    }));
+    setFoodList(tempList);
+    setFoodOptions([{value: 0, text: "Select"}, ...tempOptions]);
+  }, []);
 
   return (
     <>
@@ -56,7 +74,9 @@ export default function OrderedFoodItems() {
         <thead>
           <tr>
             <th>Food</th>
+            <th>Price</th>
             <th>Quantity</th>
+            <th>TotalPrice</th>
             <th>
               <button className="btn btn-sm btn-secondary" onClick={onRowAdd}>
                 + Add
@@ -68,13 +88,12 @@ export default function OrderedFoodItems() {
           {fields.map((field, index) => (
             <tr key={field.id}>
               <td>
-                <TextField
-                  {...register(`foodItems.${index}.name` as const, {
-                    required: "This field is required.",
-                  })}
-                  error={errors.foodItems && errors.foodItems[index]?.name}
+                <Select
+                  options={foodOptions}
+                  {...register(`foodItems.${index}.foodId` as const)}
                 />
               </td>
+              <td>Price</td>
               <td>
                 <TextField
                   type="number"
@@ -82,14 +101,29 @@ export default function OrderedFoodItems() {
                   {...register(`foodItems.${index}.quantity` as const)}
                 />
               </td>
+              <td>Total price</td>
               <td>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => onRowDelete(index)}>
-                Del
-              </button>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => onRowDelete(index)}
+                >
+                  Del
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
+        {errors.foodItems?.root && (
+          <tfoot>
+            <tr>
+              <td colSpan={5}>
+                <span className="error-feedback">
+                  {errors.foodItems?.root?.message}
+                </span>
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
       {fields.length >= 4 && (
         <button className="btn btn-sm btn-secondary" onClick={onSwapAndMove}>
@@ -97,8 +131,8 @@ export default function OrderedFoodItems() {
         </button>
       )}
       <button className="btn btn-sm btn-secondary" onClick={onUpdateAndReplace}>
-          Update and Replace
-        </button>
+        Update and Replace
+      </button>
     </>
   );
 }

@@ -17,13 +17,24 @@ export interface FoodDeliveryMasterType {
   mobile: string;
 }
 
-export type OrderedFoodItemType = {name: string; quantity: number}
+export type OrderedFoodItemType = {
+  foodId: number;
+  price: number;
+  quantity: number;
+  totalPrice: number;
+};
 
 export type FoodDeliveryFormType = {
   address: DeliveryAddressFormType;
   foodItems: OrderedFoodItemType[];
 } & FoodDeliveryMasterType &
   CheckoutFormType;
+
+export interface FoodType {
+  foodId: number;
+  name: string;
+  price: number;
+}
 
 export type SelectOptions =
   | string
