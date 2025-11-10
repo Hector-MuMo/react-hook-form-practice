@@ -1,4 +1,9 @@
-import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hook-form";
+import {
+  useFieldArray,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from "react-hook-form";
 import type {
   FoodType,
   OrderedFoodItemType,
@@ -13,8 +18,13 @@ import { roundTo2DecimalPoint } from "../../../utils";
 export default function OrderedFoodItems() {
   const [foodList, setFoodList] = useState<FoodType[]>();
   const [foodOptions, setFoodOptions] = useState<SelectOptions[]>([]);
-  const { register, getValues, setValue } = useFormContext<{ foodItems: OrderedFoodItemType[] }>();
-  useWatch<{foodItems: OrderedFoodItemType[]}>({name: "foodItems"})
+  const { register, getValues, setValue } = useFormContext<
+    { gTotal: number } & { foodItems: OrderedFoodItemType[] }
+  >();
+  const selectedFoodItems: OrderedFoodItemType[] = useWatch({
+    name: "foodItems",
+  });
+  useWatch({ name: ["gTotal"] as const });
 
   const { errors } = useFormState<{ foodItems: OrderedFoodItemType[] }>({
     name: "foodItems",
@@ -60,22 +70,42 @@ export default function OrderedFoodItems() {
     remove(index);
   };
 
-  const onFoodChange = (e: ChangeEvent<HTMLSelectElement>, rowIndex: number) => {
+  const onFoodChange = (
+    e: ChangeEvent<HTMLSelectElement>,
+    rowIndex: number
+  ) => {
     const foodId = parseInt(e.target.value);
-    let price: number
-    if(foodId === 0) price = 0
-    else price = foodList?.find(x => x.foodId === foodId)?.price || 0
+    let price: number;
+    if (foodId === 0) price = 0;
+    else price = foodList?.find((x) => x.foodId === foodId)?.price || 0;
 
     setValue(`foodItems.${rowIndex}.price`, price);
     updateRowTotalPrice(rowIndex);
-  }
+  };
 
   const updateRowTotalPrice = (rowIndex: number) => {
     const { price, quantity } = getValues(`foodItems.${rowIndex}`);
     let totalPrice = 0;
-    if(quantity && quantity > 0) totalPrice = price * quantity;
-    setValue(`foodItems.${rowIndex}.totalPrice`, roundTo2DecimalPoint(totalPrice));
-  }
+    if (quantity && quantity > 0) totalPrice = price * quantity;
+    setValue(
+      `foodItems.${rowIndex}.totalPrice`,
+      roundTo2DecimalPoint(totalPrice)
+    );
+  };
+
+  const updateGTotal = () => {
+    let gTotal = 0;
+    if (selectedFoodItems && selectedFoodItems.length > 0)
+      gTotal = selectedFoodItems.reduce(
+        (sum, curr) => sum + curr.totalPrice,
+        0
+      );
+    setValue("gTotal", roundTo2DecimalPoint(gTotal));
+  };
+
+  useEffect(() => {
+    updateGTotal();
+  }, [selectedFoodItems]);
 
   useEffect(() => {
     const tempList: FoodType[] = getFoodItems();
@@ -84,12 +114,12 @@ export default function OrderedFoodItems() {
       text: x.name,
     }));
     setFoodList(tempList);
-    setFoodOptions([{value: 0, text: "Select"}, ...tempOptions]);
+    setFoodOptions([{ value: 0, text: "Select" }, ...tempOptions]);
   }, []);
 
   return (
     <>
-      <table className="table table-borderless-table-hover">
+      <table id="foodItems" className="table table-borderless-table-hover">
         <thead>
           <tr>
             <th>Food</th>
@@ -114,9 +144,9 @@ export default function OrderedFoodItems() {
                     valueAsNumber: true,
                     min: {
                       value: 1,
-                      message: "Select food"
+                      message: "Select food",
                     },
-                    onChange: (e) => onFoodChange(e, index)
+                    onChange: (e) => onFoodChange(e, index),
                   })}
                 />
               </td>
@@ -131,9 +161,9 @@ export default function OrderedFoodItems() {
                     required: "<1",
                     min: {
                       value: 1,
-                      message: "<1"
-                    }, 
-                    onChange: () => updateRowTotalPrice(index)
+                      message: "<1",
+                    },
+                    onChange: () => updateRowTotalPrice(index),
                   })}
                 />
               </td>
@@ -149,8 +179,16 @@ export default function OrderedFoodItems() {
             </tr>
           ))}
         </tbody>
-        {errors.foodItems?.root && (
-          <tfoot>
+        <tfoot>
+          {fields && fields.length > 0 && (
+            <tr className="border-top">
+              <td colSpan={2}></td>
+              <td>G. Total</td>
+              <td>{"$" + getValues("gTotal")}</td>
+              <td></td>
+            </tr>
+          )}
+          {errors.foodItems?.root && (
             <tr>
               <td colSpan={5}>
                 <span className="error-feedback">
@@ -158,8 +196,8 @@ export default function OrderedFoodItems() {
                 </span>
               </td>
             </tr>
-          </tfoot>
-        )}
+          )}
+        </tfoot>
       </table>
       {fields.length >= 4 && (
         <button className="btn btn-sm btn-secondary" onClick={onSwapAndMove}>

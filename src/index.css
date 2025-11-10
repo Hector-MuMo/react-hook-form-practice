@@ -73,3 +73,12 @@ button:focus-visible {
   font-size: .875rem;
   color: #ea868f
 }
+
+#foodItems {
+  max-width: 600px;
+  min-width: 600px;
+}
+
+#foodItems thead tr th:not(:first-child):not(:last-child) {
+  width: 15%;
+}

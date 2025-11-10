@@ -29,6 +29,7 @@ export const FoodDeliveryForm = () => {
         customerName: "",
         mobile: "",
         paymentMethod: "",
+        gTotal: 0,
         deliveryIn: 0,
         foodItems: [{ foodId: 0, price: 0, quantity: 0, totalPrice: 0 }],
         address: {
@@ -40,7 +41,7 @@ export const FoodDeliveryForm = () => {
       },
     });
 
-  const { handleSubmit, control, setValue, getValues } = methods;
+  const { handleSubmit, control, /*setValue, getValues*/ } = methods;
 
   const onSubmit = (formData: FoodDeliveryFormType) => {
     console.log("form data", formData);

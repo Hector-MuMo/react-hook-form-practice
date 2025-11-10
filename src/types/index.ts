@@ -15,6 +15,7 @@ export interface FoodDeliveryMasterType {
   email: string;
   customerName: string;
   mobile: string;
+  gTotal: number;
 }
 
 export type OrderedFoodItemType = {
