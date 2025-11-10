@@ -40,7 +40,7 @@ export const FoodDeliveryForm = () => {
       },
     });
 
-  const { handleSubmit, control, setValue } = methods;
+  const { handleSubmit, control, setValue, getValues } = methods;
 
   const onSubmit = (formData: FoodDeliveryFormType) => {
     console.log("form data", formData);
@@ -51,7 +51,8 @@ export const FoodDeliveryForm = () => {
   };
 
   const onDemo = () => {
-    setValue("customerName", "John Doe");
+    
+    //setValue("customerName", "John Doe");
   };
 
   return (

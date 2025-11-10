@@ -90,7 +90,14 @@ export default function OrderedFoodItems() {
               <td>
                 <Select
                   options={foodOptions}
-                  {...register(`foodItems.${index}.foodId` as const)}
+                  error={errors.foodItems && errors.foodItems[index]?.foodId}
+                  {...register(`foodItems.${index}.foodId` as const, {
+                    valueAsNumber: true,
+                    min: {
+                      value: 1,
+                      message: "Select food"
+                    }
+                  })}
                 />
               </td>
               <td>Price</td>
@@ -98,7 +105,15 @@ export default function OrderedFoodItems() {
                 <TextField
                   type="number"
                   min={0}
-                  {...register(`foodItems.${index}.quantity` as const)}
+                  error={errors.foodItems && errors.foodItems[index]?.quantity}
+                  {...register(`foodItems.${index}.quantity` as const, {
+                    valueAsNumber: true,
+                    required: "<1",
+                    min: {
+                      value: 1,
+                      message: "<1"
+                    }
+                  })}
                 />
               </td>
               <td>Total price</td>

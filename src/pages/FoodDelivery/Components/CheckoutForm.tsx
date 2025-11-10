@@ -50,7 +50,9 @@ const CheckoutForm = () => {
             label="Delivery Whithin"
             options={deliveryOptions}
             error={errors.paymentMethod}
-            {...register("deliveryIn")}
+            {...register("deliveryIn", {
+              valueAsNumber: true
+            })}
           />
         </div>
       </div>
