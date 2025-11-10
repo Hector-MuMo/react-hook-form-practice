@@ -1,18 +1,20 @@
-import { useFieldArray, useFormContext, useFormState } from "react-hook-form";
+import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hook-form";
 import type {
   FoodType,
   OrderedFoodItemType,
   SelectOptions,
 } from "../../../types";
 import TextField from "../../../controls/TextField";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { getFoodItems } from "../../../db";
 import Select from "../../../controls/Select";
+import { roundTo2DecimalPoint } from "../../../utils";
 
 export default function OrderedFoodItems() {
-  const [footList, setFoodList] = useState<FoodType[]>();
+  const [foodList, setFoodList] = useState<FoodType[]>();
   const [foodOptions, setFoodOptions] = useState<SelectOptions[]>([]);
-  const { register } = useFormContext<{ foodItems: OrderedFoodItemType[] }>();
+  const { register, getValues, setValue } = useFormContext<{ foodItems: OrderedFoodItemType[] }>();
+  useWatch<{foodItems: OrderedFoodItemType[]}>({name: "foodItems"})
 
   const { errors } = useFormState<{ foodItems: OrderedFoodItemType[] }>({
     name: "foodItems",
@@ -58,6 +60,23 @@ export default function OrderedFoodItems() {
     remove(index);
   };
 
+  const onFoodChange = (e: ChangeEvent<HTMLSelectElement>, rowIndex: number) => {
+    const foodId = parseInt(e.target.value);
+    let price: number
+    if(foodId === 0) price = 0
+    else price = foodList?.find(x => x.foodId === foodId)?.price || 0
+
+    setValue(`foodItems.${rowIndex}.price`, price);
+    updateRowTotalPrice(rowIndex);
+  }
+
+  const updateRowTotalPrice = (rowIndex: number) => {
+    const { price, quantity } = getValues(`foodItems.${rowIndex}`);
+    let totalPrice = 0;
+    if(quantity && quantity > 0) totalPrice = price * quantity;
+    setValue(`foodItems.${rowIndex}.totalPrice`, roundTo2DecimalPoint(totalPrice));
+  }
+
   useEffect(() => {
     const tempList: FoodType[] = getFoodItems();
     const tempOptions: SelectOptions[] = tempList.map((x) => ({
@@ -96,11 +115,12 @@ export default function OrderedFoodItems() {
                     min: {
                       value: 1,
                       message: "Select food"
-                    }
+                    },
+                    onChange: (e) => onFoodChange(e, index)
                   })}
                 />
               </td>
-              <td>Price</td>
+              <td>${getValues(`foodItems.${index}.price`)}</td>
               <td>
                 <TextField
                   type="number"
@@ -112,11 +132,12 @@ export default function OrderedFoodItems() {
                     min: {
                       value: 1,
                       message: "<1"
-                    }
+                    }, 
+                    onChange: () => updateRowTotalPrice(index)
                   })}
                 />
               </td>
-              <td>Total price</td>
+              <td>${getValues(`foodItems.${index}.totalPrice`)}</td>
               <td>
                 <button
                   className="btn btn-sm btn-outline-danger"
