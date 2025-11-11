@@ -12,10 +12,12 @@ export interface DeliveryAddressFormType {
 
 export interface FoodDeliveryMasterType {
   orderNo: number;
+  orderId: number;
   email: string;
   customerName: string;
   mobile: string;
   gTotal: number;
+  placeOn: Date;
 }
 
 export type OrderedFoodItemType = {

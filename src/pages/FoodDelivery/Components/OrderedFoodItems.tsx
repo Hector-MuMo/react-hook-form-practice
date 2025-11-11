@@ -159,6 +159,11 @@ export default function OrderedFoodItems() {
                   {...register(`foodItems.${index}.quantity` as const, {
                     valueAsNumber: true,
                     required: "<1",
+                    validate: async (value: number) => {
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      if (value && value > 9) return "OOT";
+                      else return true;
+                    },
                     min: {
                       value: 1,
                       message: "<1",
